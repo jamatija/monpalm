@@ -12,6 +12,6 @@ class VenueTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\VenueType::factory()->count(30)->create();
     }
 }

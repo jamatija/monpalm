@@ -15,7 +15,8 @@ class VenueTypeController extends Controller
      */
     public function index()
     {
-        //
+        $venueTypes = VenueType::paginate(10);
+        return response()->json($venueTypes);
     }
 
 
@@ -51,6 +52,7 @@ class VenueTypeController extends Controller
      */
     public function destroy(VenueType $venueType)
     {
-        //
+        $venueType->delete();
+        return response()->json(null, 204);
     }
 }
