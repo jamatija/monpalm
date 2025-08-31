@@ -32,8 +32,13 @@ class VenueTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(VenueType $venueType)
+    public function show(Request $request, VenueType $venueType)
     {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
         return response()->json($venueType);
     }
 

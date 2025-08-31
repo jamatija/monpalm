@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('/register', [AuthV1::class, 'register']);
-Route::post('/login', [AuthV1::class, 'login']);
+Route::post('/login', [AuthV1::class, 'login'])->name('login'); 
 Route::post('/logout', [AuthV1::class, 'logout'])->middleware('auth:sanctum');
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
