@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name'); 
             $table->text('description')->nullable();
             $table->string('slug')->unique();
+            $table->boolean('is_active')->default(true);
             $table->string('google_maps_link')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('municipality_id')->constrained()->onDelete('cascade');

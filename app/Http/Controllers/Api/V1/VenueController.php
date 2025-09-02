@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreVenueRequest;
 use App\Models\Venue;
+use Illuminate\Support\Facades\DB;
 
 class VenueController extends Controller
 {
@@ -19,9 +20,9 @@ class VenueController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(StoreVenueRequest $request)
     {
-        $venue = Venue::create(request()->all());
+        $venue = $this->createVenueWithOpeningHours($request->validated());
         return response()->json($venue, 201);
     }
 
@@ -49,5 +50,26 @@ class VenueController extends Controller
     {
         $venue->delete();
         return response()->json(null, 204);
+    }
+
+    public function createVenueWithOpeningHours(array $data)
+    {
+        $venue = null;
+
+        try {
+            DB::transaction(function () use ($data, &$venue) {
+                $venue = Venue::create($data);
+            foreach ($data['venue_opening_hours'] as $openingHour) {
+                $venue->openingHours()->create($openingHour);
+            }
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while creating the venue.',
+                'error' => $e->getMessage(),
+            ], 500); 
+        }
+
+        return $venue;
     }
 }

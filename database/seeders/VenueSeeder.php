@@ -12,6 +12,6 @@ class VenueSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        \App\Models\Venue::factory(10)->create();
     }
 }
