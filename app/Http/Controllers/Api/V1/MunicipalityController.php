@@ -14,7 +14,7 @@ class MunicipalityController extends Controller
      */
     public function index()
     {
-        return ['municipalities'];
+        return response()->json(Municipality::all());
     }
 
 
