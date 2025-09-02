@@ -29,8 +29,4 @@ return Application::configure(basePath: dirname(__DIR__))
             return redirect()->guest(config('app.frontend_url').'/login');
         });
 
-
     })->create();
-
-
-    

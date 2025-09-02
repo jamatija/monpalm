@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Municipality;
 use Illuminate\Http\Request;
+use App\Http\Requests\MunicipalityRequest;
 
 class MunicipalityController extends Controller
 {
@@ -16,20 +17,16 @@ class MunicipalityController extends Controller
         return ['municipalities'];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MunicipalityRequest $request)
     {
-        //
+        $validated = $request->validated();
+        Municipality::create($validated);
+
+        return response()->json(['message' => 'Municipality created successfully.'], 201);
     }
 
     /**
@@ -37,23 +34,21 @@ class MunicipalityController extends Controller
      */
     public function show(Municipality $municipality)
     {
-        return "ima";
+        if ($municipality) {
+            return response()->json($municipality);
+        }
+
+        return response()->json(['message' => 'Municipality not found.'], 404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Municipality $municipality)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Municipality $municipality)
+    public function update(MunicipalityRequest $municipality_request, Municipality $municipality)
     {
-        //
+        $municipality->update($municipality_request->validated());
+        return response()->json($municipality);
     }
 
     /**
@@ -61,6 +56,7 @@ class MunicipalityController extends Controller
      */
     public function destroy(Municipality $municipality)
     {
-        //
+        $municipality->delete();
+        return response()->json(null, 204);
     }
 }
