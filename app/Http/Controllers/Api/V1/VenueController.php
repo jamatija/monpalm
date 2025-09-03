@@ -33,16 +33,16 @@ class VenueController extends Controller
      */
     public function show(Venue $venue)
     {
-        return response()->json($venue->load('venueOpeningHours'));
+        return $venue->load('venueOpeningHours');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVenueRequest $request, Venue $venue)
+    public function update(UpdateVenueRequest $request, Venue $venue)   
     {
         $venue->update($request->validated());
-        return response()->json($venue->load('venueOpeningHours'));
+        return $venue->load('venueOpeningHours');
     }
 
     /**
@@ -51,7 +51,7 @@ class VenueController extends Controller
     public function destroy(Venue $venue)
     {
         $venue->delete();
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 
     public function createVenueWithOpeningHours(array $data)
