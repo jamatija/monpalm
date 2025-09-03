@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreVenueRequest;
 use App\Models\Venue;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class VenueController extends Controller
 {
@@ -23,7 +24,7 @@ class VenueController extends Controller
     public function store(StoreVenueRequest $request)
     {
         $venue = $this->createVenueWithOpeningHours($request->validated());
-        return response()->json($venue, 201);
+        return response()->json($venue->load('venueOpeningHours'), 201);
     }
 
     /**
@@ -31,7 +32,7 @@ class VenueController extends Controller
      */
     public function show(Venue $venue)
     {
-        return response()->json($venue);
+        return response()->json($venue->load('venueOpeningHours'));
     }
 
     /**
@@ -40,7 +41,7 @@ class VenueController extends Controller
     public function update(Request $request, Venue $venue)
     {
         $venue->update($request->all());
-        return response()->json($venue);    
+        return response()->json($venue->load('venueOpeningHours'));  
     }
 
     /**
@@ -54,22 +55,28 @@ class VenueController extends Controller
 
     public function createVenueWithOpeningHours(array $data)
     {
-        $venue = null;
 
         try {
-            DB::transaction(function () use ($data, &$venue) {
+            return DB::transaction(function () use ($data) {
+                $openingHoursData = $data['venue_opening_hours'];
+                unset($data['venue_opening_hours']);
+                
                 $venue = Venue::create($data);
-            foreach ($data['venue_opening_hours'] as $openingHour) {
-                $venue->openingHours()->create($openingHour);
-            }
-            });
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred while creating the venue.',
-                'error' => $e->getMessage(),
-            ], 500); 
-        }
+                
+                Log::info('Creating venue with data:', $data);
 
-        return $venue;
+                foreach ($openingHoursData as $openingHour) {
+                    $venue->venueOpeningHours()->create($openingHour);
+                }
+
+                return $venue->fresh()->load('venueOpeningHours');
+            });
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw new \Exception('Database error occurred while creating venue: ' . $e->getMessage());
+            
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }
