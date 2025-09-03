@@ -27,14 +27,13 @@ class StoreVenueRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'google_maps_link' => 'nullable|string',
-            'user_id' => 'required|exists:users,id',
-            'municipality_id' => 'required|exists:municipalities,id',
-            'type_id' => 'required|exists:venue_types,id',
-            'venue_opening_hours' => 'required|array', 
-            'venue_opening_hours.*.day_of_week' => 'required|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
-            'venue_opening_hours.*.open_time' => 'required|date_format:H:i',
-            'venue_opening_hours.*.close_time' => 'required|date_format:H:i',
-            'venue_opening_hours.*.notes' => 'nullable|string',
+            'municipality_id' => 'sometimes|exists:municipalities,id',
+            'type_id' => 'sometimes|exists:venue_types,id',
+            'venue_opening_hours' => 'sometimes|array',
+            'venue_opening_hours.*.day_of_week' => 'sometimes|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'venue_opening_hours.*.open_time' => 'sometimes|date_format:H:i',
+            'venue_opening_hours.*.close_time' => 'sometimes|date_format:H:i',
+            'venue_opening_hours.*.notes' => 'sometimes|string',
         ];
     }
 }

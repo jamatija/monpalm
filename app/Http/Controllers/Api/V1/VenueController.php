@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreVenueRequest;
+use App\Http\Requests\UpdateVenueRequest;
 use App\Models\Venue;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
 
 class VenueController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Venue::paginate(10));
+        return response()->json(Venue::with('venueOpeningHours')->paginate($this->resolvePerPage($request)));
     }
 
     /**
@@ -38,10 +39,10 @@ class VenueController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Venue $venue)
+    public function update(UpdateVenueRequest $request, Venue $venue)
     {
-        $venue->update($request->all());
-        return response()->json($venue->load('venueOpeningHours'));  
+        $venue->update($request->validated());
+        return response()->json($venue->load('venueOpeningHours'));
     }
 
     /**
@@ -55,17 +56,14 @@ class VenueController extends Controller
 
     public function createVenueWithOpeningHours(array $data)
     {
-
         try {
             return DB::transaction(function () use ($data) {
-                $openingHoursData = $data['venue_opening_hours'];
-                unset($data['venue_opening_hours']);
-                
-                $venue = Venue::create($data);
-                
-                Log::info('Creating venue with data:', $data);
+                $venueOpeningHoursData = $data['venue_opening_hours'];
+                $data = Arr::except($data, ['venue_opening_hours']);
 
-                foreach ($openingHoursData as $openingHour) {
+                $venue = Venue::create($data);
+
+                foreach ($venueOpeningHoursData as $openingHour) {
                     $venue->venueOpeningHours()->create($openingHour);
                 }
 
