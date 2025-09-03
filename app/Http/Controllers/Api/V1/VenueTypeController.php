@@ -58,6 +58,6 @@ class VenueTypeController extends Controller
     public function destroy(VenueType $venueType)
     {
         $venueType->delete();
-        return response()->json(null, 204);
+        return response()->noContent();
     }
 }
