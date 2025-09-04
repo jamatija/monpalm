@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreVenueRequest;
 use App\Http\Requests\UpdateVenueRequest;
 use App\Models\Venue;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 
@@ -60,19 +61,14 @@ class VenueController extends Controller
             return DB::transaction(function () use ($data) {
                 $venueOpeningHoursData = $data['venue_opening_hours'];
                 $data = Arr::except($data, ['venue_opening_hours']);
+                $data['user_id'] = Auth::id();
 
                 $venue = Venue::create($data);
-
-                foreach ($venueOpeningHoursData as $openingHour) {
-                    $venue->venueOpeningHours()->create($openingHour);
-                }
+                $venue->venueOpeningHours()->createMany($venueOpeningHoursData);
 
                 return $venue->fresh()->load('venueOpeningHours');
             });
 
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw new \Exception('Database error occurred while creating venue: ' . $e->getMessage());
-            
         } catch (\Exception $e) {
             throw $e;
         }
