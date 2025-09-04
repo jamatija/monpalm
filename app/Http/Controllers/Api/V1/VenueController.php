@@ -42,7 +42,7 @@ class VenueController extends Controller
      */
     public function update(UpdateVenueRequest $request, Venue $venue)   
     {
-        $venue->update($request->validated());
+        $venue = $this->updateOrCreateVenueWithOpeningHours($request->validated(), $venue);
         return $venue->load('venueOpeningHours');
     }
 
@@ -55,20 +55,22 @@ class VenueController extends Controller
         return response()->noContent();
     }
 
-    public function updateOrCreateVenueWithOpeningHours(array $data)
+    public function updateOrCreateVenueWithOpeningHours(array $request_data, $existingVenue=null)
     {
         try {
-            return DB::transaction(function () use ($data) {
-                if($data['venue_opening_hours']) {
-                    $venueOpeningHoursData = $data['venue_opening_hours'];
+            return DB::transaction(function () use ($request_data, $existingVenue) {
+                if(!empty($data['venue_opening_hours'])) {
+                    $venueOpeningHoursData = $request_data['venue_opening_hours'];
                 }
-                $data = Arr::except($data, ['venue_opening_hours']);
-                $data['user_id'] = Auth::id();
+                $data = Arr::except($request_data, ['venue_opening_hours']);
+                $data['user_id'] = $venue->user_id ?? Auth::id();
 
-                $venue = Venue::updateOrCreate($data);
+                !empty($existingVenue) ?? $existing_venue_id['id'] = $existingVenue->id;
+                
+                $venue = Venue::updateOrCreate($existing_venue_id, $data);
 
                 if(isset($venueOpeningHoursData) && is_array($venueOpeningHoursData)){
-                    $venue->venueOpeningHours()->createMany($venueOpeningHoursData);
+                    $venue->venueOpeningHours()->updateOrCreate($venueOpeningHoursData);
                 }
 
                 return $venue->fresh()->load('venueOpeningHours');
