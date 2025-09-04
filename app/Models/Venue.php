@@ -10,8 +10,6 @@ class Venue extends Model
 {
     /** @use HasFactory<\Database\Factories\VenueFactory> */
     use HasFactory;
-    use HasSlug;
-
     protected $table = 'venues';
 
     protected $casts = [

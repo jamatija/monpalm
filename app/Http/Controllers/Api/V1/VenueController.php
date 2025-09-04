@@ -65,9 +65,9 @@ class VenueController extends Controller
                 $data = Arr::except($request_data, ['venue_opening_hours']);
                 $data['user_id'] = $venue->user_id ?? Auth::id();
 
-                !empty($existingVenue) ?? $existing_venue_id['id'] = $existingVenue->id;
+                $condition = $existingVenue ? ['id' => $existingVenue->id] : ['id' => null];
                 
-                $venue = Venue::updateOrCreate($existing_venue_id, $data);
+                $venue = Venue::updateOrCreate($condition, $data);
 
                 if(isset($venueOpeningHoursData) && is_array($venueOpeningHoursData)){
                     $venue->venueOpeningHours()->updateOrCreate($venueOpeningHoursData);

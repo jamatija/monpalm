@@ -11,4 +11,5 @@ trait HasSlug
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
     }
+
 }

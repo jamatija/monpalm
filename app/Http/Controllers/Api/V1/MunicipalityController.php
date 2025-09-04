@@ -23,9 +23,9 @@ class MunicipalityController extends Controller
     public function store(MunicipalityRequest $request)
     {
         $validated = $request->validated();
-        Municipality::create($validated);
+        $municipality = Municipality::create($validated);
 
-        return response()->json(['message' => 'Municipality created successfully.'], 201);
+        return $municipality;
     }
 
     /**
