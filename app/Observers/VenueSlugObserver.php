@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 
-class SlugObserver
+class VenueSlugObserver
 {
     /**
      * Handle the Venue "created" event.

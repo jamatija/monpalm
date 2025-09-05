@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Venue;
-use App\Observers\SlugObserver;
+use App\Observers\VenueSlugObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Venue::observe(SlugObserver::class);
+        Venue::observe(VenueSlugObserver::class);
     }
 }
