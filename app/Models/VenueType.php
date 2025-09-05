@@ -12,6 +12,8 @@ class VenueType extends Model
     use HasFactory;
     use HasSlug;
 
+    protected $table = ['venue_types'];
+
     protected $fillable = ['name', 'slug'];
 
 }
