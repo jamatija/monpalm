@@ -24,17 +24,17 @@ class VenueTypeRequest extends FormRequest
     {
         $uniqueRule = Rule::unique('venue_types', 'name');
     
-        // Ako je PUT/PATCH (update), ignoriši trenutni record
         if (in_array($this->method(), ['PUT', 'PATCH'])) {
-            $uniqueRule->ignore($this->route('venue_type'));
+            $uniqueRule->ignore($this->route('venue-types'));
         }
 
         return [
             'name' => [
+                'bail',
                 'required',
                 'string',
                 'max:255',
-                'not_regex:/^\s*$/',
+                'filled', 
                 $uniqueRule,
             ],
         ];
@@ -48,6 +48,7 @@ class VenueTypeRequest extends FormRequest
             'name.required' => 'Name is required.',
             'name.string'   => 'Name must be a string.',
             'name.max'      => 'Name cannot be longer than 255 characters.',
+            'name.regex'    => 'Name cannot be empty or whitespace.',
             'name.unique'   => 'A venue type with this name already exists.',
         ];
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VenueTypeRequest;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\VenueType;
 
@@ -25,6 +25,7 @@ class VenueTypeController extends Controller
      */
     public function store(VenueTypeRequest $request)
     {
+
         $venueType = VenueType::create($request->validated());
         return response()->json($venueType, 201);
     }
