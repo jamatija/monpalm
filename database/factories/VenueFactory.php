@@ -23,6 +23,7 @@ class VenueFactory extends Factory
         return [
             'name' => $this->faker->company(),
             'description' => $this->faker->paragraph(),
+            'highlight' => $this->faker->paragraph(1, true),
             'is_active' => $this->faker->boolean(),
             'google_maps_link' => $this->faker->url(),
             'user_id' => $user->id, 
