@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class HiglightSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\User::factory(3)->create();
+        \App\Models\Highlight::factory()->count(20)->create();
     }
 }

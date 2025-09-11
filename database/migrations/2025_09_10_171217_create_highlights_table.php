@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('venues', function (Blueprint $table) {
-            $table->string('highlight')->nullable()->after('description');
+        Schema::create('highlights', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');           
+            $table->string('slug')->unique(); 
+            $table->string('category')->index(); 
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('venues', function (Blueprint $table) {
-            $table->dropColumn('highlight');
-        });
+        Schema::dropIfExists('highlights');
     }
 };

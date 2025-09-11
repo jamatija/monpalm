@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Higlight;
 
 class Venue extends Model
 {
@@ -35,6 +36,17 @@ class Venue extends Model
     public function venueType()
     {
         return $this->belongsTo(VenueType::class, 'type_id');
+    }
+
+    public function highlights()
+    {
+        return $this->belongsToMany(Highlight::class)
+                ->withPivot('is_primary');
+    }
+
+     public function primaryHighlights()
+    {
+        return $this->highlights()->wherePivot('is_primary', true);
     }
 
 }

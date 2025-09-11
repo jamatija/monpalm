@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class VenueSeeder extends Seeder
@@ -14,4 +13,5 @@ class VenueSeeder extends Seeder
     {
         \App\Models\Venue::factory(10)->create();
     }
+    
 }
